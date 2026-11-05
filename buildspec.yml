@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - echo "Installing dependencies..."
+      - python -m pip install --upgrade pip
+      - pip install -r requirements.txt
+
+  build:
+    commands:
+      - echo "Running application tests..."
+      - python -m pytest --junitxml=test-results.xml
+
+reports:
+  pytest-reports:
+    files:
+      - test-results.xml
+    file-format: JUNITXML
+
+artifacts:
+  files:
+    - app.py
+    - requirements.txt
+    - test-results.xml
+    - buildspec.yml
