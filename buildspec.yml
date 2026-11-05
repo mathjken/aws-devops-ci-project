@@ -14,6 +14,16 @@ phases:
       - echo "Running application tests..."
       - python -m pytest --junitxml=test-results.xml
 
+  post_build:
+    commands:
+      - echo "Packaging application..."
+      - mkdir -p package
+      - cp app.py requirements.txt package/
+      - cd package
+      - python -m zipfile -c ../application.zip app.py requirements.txt
+      - cd ..
+      - echo "Application packaging completed."
+
 reports:
   pytest-reports:
     files:
@@ -22,7 +32,6 @@ reports:
 
 artifacts:
   files:
-    - app.py
-    - requirements.txt
+    - application.zip
     - test-results.xml
     - buildspec.yml

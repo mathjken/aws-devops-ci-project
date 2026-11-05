@@ -13,3 +13,6 @@ __pycache__/
 
 # Generated test report
 test-results.xml
+
+package/
+application.zip
