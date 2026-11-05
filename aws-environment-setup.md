@@ -120,3 +120,45 @@ The AWS CLI identity verification was successfully completed using:
 The AWS account, authenticated session and assumed IAM role were returned successfully.
 
 Additional verification evidence is stored in the project's evidence directory.
+
+
+## 10. IAM Service Roles and Permissions
+
+The project uses dedicated IAM service roles to grant CodeBuild and CodePipeline the permissions required to execute the CI/CD workflow.
+
+### CodeBuild Service Role
+
+**Role name:** `codebuild-aws-devops-ci-build-service-role`
+
+**Attached customer-managed policy:**
+- `CodeBuildBasePolicy-aws-devops-ci-build-eu-west-2`
+
+This policy provides the permissions required by the CodeBuild project to perform its build operations and interact with the configured build resources.
+
+### CodePipeline Service Role
+
+**Role name:** `AWSCodePipelineServiceRole-eu-west-2-aws-devops-ci-pipeline`
+
+**Attached customer-managed policies:**
+- `CodePipeline-CodeCommit-eu-west-2-aws-devops-ci-pipeline`
+- `AWSCodePipelineServiceRole-eu-west-2-aws-devops-ci-pipeline`
+- `CodePipeline-CodeBuild-eu-west-2-aws-devops-ci-pipeline`
+
+These policies support the pipeline's integration with CodeCommit and CodeBuild and its orchestration activities.
+
+**Additional inline policy:** `CodePipelineS3DeploymentAccess`
+
+This custom policy grants the pipeline access to the dedicated S3 deployment bucket:
+
+`aws-devops-ci-deployment-672417491335-20261105`
+
+The permissions include:
+
+| Resource | Actions |
+|---|---|
+| S3 deployment bucket | `s3:GetBucketVersioning`, `s3:GetBucketAcl`, `s3:GetBucketLocation`, `s3:ListBucket` |
+| Objects in deployment bucket | `s3:PutObject`, `s3:PutObjectAcl`, `s3:GetObject`, `s3:GetObjectVersion` |
+
+These permissions allow CodePipeline to inspect the deployment bucket and upload or retrieve deployment artifacts.
+
+The deployment bucket has versioning enabled and all four S3 Block Public Access settings enabled.
